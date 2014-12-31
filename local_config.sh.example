@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# local_config.sh -- DO NOT COMIT TO VERSION CONTROL
+declare VC_NAME="Your Name Here"
+declare VC_EMAIL="your@email.here"
+declare GITHUB_APP_KEY="your-app-key-here"
