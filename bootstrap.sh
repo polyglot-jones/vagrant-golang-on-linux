@@ -27,15 +27,15 @@ sudo apt-get install -y git mercurial bzr
 
 echo "VC_NAME = $VC_NAME"
 echo "VC_EMAIL = $VC_EMAIL"
-echo "GITHUB_APP_KEY = $GITHUB_APP_KEY"
+echo "GITHUB_APP_TOKEN = $GITHUB_APP_TOKEN"
 
 git config --global user.name "$VC_NAME"
 git config --global user.email $VC_EMAIL
 bzr whoami "$VC_NAME <$VC_EMAIL>"
 # TODO Create a file called ~/.hgrc with Hg settings, including username=John Doe <johndoe@example.com> (under the [ui] section)
 if [ ! -f "~/.netrc" ]; then
-	echo "~/.netrc does not already exist"
-	sudo echo "machine github.com login $GITHUB_APP_KEY" > ~/.netrc
+	echo "~/.netrc does not already exist. Creating it now."
+	sudo echo "machine github.com login $GITHUB_APP_TOKEN" > ~/.netrc
 fi
 
 ######################################################   Apache Server

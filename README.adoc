@@ -1,0 +1,111 @@
+vagrant-golang-on-linux
+=======================
+
+*Develop Go applications with the help of a pre-configured virtual machine.* This is a Vagrant (http://vagrantup.com) configuration for provisioning an Ubuntu box (or a similar flavor of Linux) with the tools needed to get and build Go projects.
+
+Status: <<status,See below.>>
+
+== Features
+
+Here are just some possible reasons to do this:
+
+* Allow a developer who is new to Go to become productive in minutes. (Also, an easy way to allow developers to dabble in Go while primarily working in other languages.)
+* Standardize Go development across workstations.
+* Edit the Go source files using your favorite IDE on your host machine (Windows, Mac), but then compile and run the Go application within a Linux guest machine. (If your host machine is a Windows box, then this can avoid some incompatibility issues with Go libraries that assume a Linux environment: system logging, embedded C code, etc.)
+* Fire up a secondary VM to test out updates to GoLang and/or dependencies in isolation before upgrading your main environment.
+* The guest is automatically configured for all three version control systems that GO GET expects to be present in order to download dependencies (Git, Mecurial, and Bazaar), so that you do not need them all installed on the host.
+
+
+== What's Installed
+
+* Go Tools
+** GoLang 1.4
+** GoDep (dependency management) (TODO - Not Yet)
+* Version Control
+** Git
+** Hg
+** Bazaar
+* Documentation Tools
+** AsciiDoc (TODO - Not Yet)
+** GraphViz (TODO - Not Yet)
+** a Swagger documentation generator (for REST API calls) from Go comments (TODO - Not Yet)
+
+
+
+== Prerequisites
+
+* Generate a GitHub application token for seamless access to your private repositories. See https://help.github.com/articles/creating-an-access-token-for-command-line-use/
+* That `ssh` is available from the command line on your host machine. (The easiest way to do that in Windows is to use CygWin or GitBash instead of CMD as your terminal window.)
+
+
+== Getting Started
+
+(The following instructions assume a Windows host machine. Adjust accordingly.)
+
+. Git clone this project to a work folder (e.g. D:\work\vagrant-golang-on-linux), but NOT to the same folder that you'll use for your GOPATH.
+.. Edit `Vagrantfile` and find the line that specifies `config.vm.synced_folder "C:\gowork", "/gowork", create: true`. Change `C:\gowork` to specify where on the host filesystem you have (want to have) your GOPATH working folder. (The `create: true` part simply means that if that working folder does not already exist, it will be created automatically.)
+.. Optionally, change the `config.vm.box` line in `Vagrantfile` to specify a different Vagrant guest machine to use as a base.
+.. Optionally, change the `config.vm.define` line in `Vagrantfile` to specify a different name for your VM other than `godev`.
+.. Copy `local_config.sh.example` as `local_config.sh` and edit it to fill in the blanks (`Your Name Here`, `your@email.here`, `your-app-token-here`).
+. Download and Install Oracle VirtualBox (or any other virtual machine software that is supported by Vagrant).
+.. https://www.virtualbox.org/wiki/Downloads
+.. Start VirtualBox and make sure that the configured location for the VMs is on a disk partition that has adequate space. That setting is under `File | Preferences... (Ctrl-G) | General Settings` (For example, if there is plenty of space on the D: partition, then perhaps use `D:\data\vboxmachines`.)
+. Download and Install Vagrant
+.. https://www.vagrantup.com/downloads.html per https://docs.vagrantup.com/v2/installation/index.html
+. Open a terminal window (on Windows, it's fine to use a CygWin window or a GitBash window).
+.. `cd D:\work\vagrant-golang-on-linux`
+. Fire it up
+.. Use `vagrant up` to fire up the godev virtual machine. The first time it will take several minutes as Vagrant has to download the base machine image (to `~/.vagrant.d/boxes`), start up VirtualBox and create a new machine using that base, and then run all of the installation scripts specified by `Vagrantfile`.
+.. Use `vagrant ssh` to shell into the running guest machine.
+... Use `alias` to find out what command aliases have been defined.
+... Use `exit` return to the host machine command line.
+.. Use `vagrant halt` to stop the guest machine and then `vagrant up` to reboot it.
+.. Use `vagrant suspend` to hibernate the guest machine and `vagrant resume` to wake it up.
+.. Use `vagrant destroy` to wipe out the guest machine (if you want the next `vagrant up` to start over).
+
+== Shared Folders
+
+There are two folders that are shared between the guest and host machines. Any changes that you make to them in one environment will automatically be reflected in the other environment.
+
+* `/gowork` (in the guest) == `C:\gowork` (in the host) -- The `$GOPATH` is set to this.
+* `/vagrant` (in the guest) == whatever folder you were in on the host when you issued the `vagrant up` command (which must be the one that has the `Vangrantfile` file, e.g. `D:\work\vagrant-golang-on-linux`). You shouldn't need to work with this folder from within the guest, but be aware of its existence, and be careful not to affect it.
+
+In this way, you can use your favorite IDE or text editor on the host machine to edit your Go source files (in C:\gowork), but then compile and run them from within the guest machine.
+
+
+
+== Taking Advantage of the Various Tools
+
+=== The usual Go  Tools
+
+* `go get`, `go test`, `go build`, `go install`, etc. are all available, of course.
+
+=== The GoDep Tool
+
+(TODO - Not Yet)
+
+=== The Swagger Documentation Generator
+
+(TODO - Not Yet)
+
+=== The AsciiDoc and GraphViz Toolchain
+
+(TODO - Not Yet)
+
+
+[[status]]
+== Status
+
+This is still a work in progress, but definitely usable.
+
+*Known Bugs:*
+
+* The contents of `profile_additional.sh` are supposed to be tacked on to `.profile.sh` so that they get executed when an SSH session starts up, but it's not working. For now, issue `./profile_additional.sh` right after starting a new session with `vagrant ssh`.
+* The settings in `local_config.sh` are used to configure Git and Mercurial, but Bazaar is not yet configured with them.
+
+*Missing Features:*
+
+* See the `TODO` comments in `Vagrantfile` and `bootstrap.sh`.
+* Using shell scripts to install the software is undoubtedly doing it the hard way, but I haven't learned how to take advantage of Chef and Phuppet yet.
+
+
