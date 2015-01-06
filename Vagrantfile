@@ -27,7 +27,7 @@ Vagrant.configure(2) do |config|
   # your network.
   # config.vm.network "public_network"
 
-  config.vm.synced_folder "C:\gowork", "/gowork", create: true
+  config.vm.synced_folder "D:\work\go", "/workgo", create: true
 
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine

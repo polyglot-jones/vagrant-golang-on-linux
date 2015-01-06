@@ -43,7 +43,7 @@ Here are just some possible reasons to do this:
 (The following instructions assume a Windows host machine. Adjust accordingly.)
 
 . Git clone this project to a work folder (e.g. D:\work\vagrant-golang-on-linux), but NOT to the same folder that you'll use for your GOPATH.
-.. Edit `Vagrantfile` and find the line that specifies `config.vm.synced_folder "C:\gowork", "/gowork", create: true`. Change `C:\gowork` to specify where on the host filesystem you have (want to have) your GOPATH working folder. (The `create: true` part simply means that if that working folder does not already exist, it will be created automatically.)
+.. Edit `Vagrantfile` and find the line that specifies `config.vm.synced_folder "D:\work\go", "/workgo", create: true`. Change `D:\work\go` to specify where on the host filesystem you have (want to have) your GOPATH working folder. (The `create: true` part simply means that if that working folder does not already exist, it will be created automatically.)
 .. Optionally, change the `config.vm.box` line in `Vagrantfile` to specify a different Vagrant guest machine to use as a base.
 .. Optionally, change the `config.vm.define` line in `Vagrantfile` to specify a different name for your VM other than `godev`.
 .. Copy `local_config.sh.example` as `local_config.sh` and edit it to fill in the blanks (`Your Name Here`, `your@email.here`, `your-app-token-here`).
@@ -67,10 +67,10 @@ Here are just some possible reasons to do this:
 
 There are two folders that are shared between the guest and host machines. Any changes that you make to them in one environment will automatically be reflected in the other environment.
 
-* `/gowork` (in the guest) == `C:\gowork` (in the host) -- The `$GOPATH` is set to this.
+* `/workgo` (in the guest) == `D:\work\go` (in the host) -- The `$GOPATH` is set to this.
 * `/vagrant` (in the guest) == whatever folder you were in on the host when you issued the `vagrant up` command (which must be the one that has the `Vangrantfile` file, e.g. `D:\work\vagrant-golang-on-linux`). You shouldn't need to work with this folder from within the guest, but be aware of its existence, and be careful not to affect it.
 
-In this way, you can use your favorite IDE or text editor on the host machine to edit your Go source files (in C:\gowork), but then compile and run them from within the guest machine.
+In this way, you can use your favorite IDE or text editor on the host machine to edit your Go source files (in D:\work\go), but then compile and run them from within the guest machine.
 
 
 
@@ -82,11 +82,12 @@ In this way, you can use your favorite IDE or text editor on the host machine to
 
 === The GoDep Tool
 
-(TODO - Not Yet)
+The godep executable is installed in the $GOPATH/bin folder, which is on the PATH. So, issue godep commands normally (per https://github.com/tools/godep).
 
 === The Swagger Documentation Generator
 
-(TODO - Not Yet)
+The swagger executable is installed in the $GOPATH/bin folder, which is on the PATH. So, run the swagger command normally (per https://github.com/yvasiyarov/swagger).
+
 
 === The AsciiDoc and GraphViz Toolchain
 
@@ -100,7 +101,7 @@ This is still a work in progress, but definitely usable.
 
 *Known Bugs:*
 
-* The contents of `profile_additional.sh` are supposed to be tacked on to `.profile.sh` so that they get executed when an SSH session starts up, but it's not working. For now, issue `./profile_additional.sh` right after starting a new session with `vagrant ssh`.
+* The contents of `profile_additional.sh` are supposed to be tacked on to `.profile.sh` so that they get executed when an SSH session starts up, but it's not working. For now, issue `source profile_additional.sh` right after starting a new session with `vagrant ssh`.
 * The settings in `local_config.sh` are used to configure Git and Mercurial, but Bazaar is not yet configured with them.
 
 *Missing Features:*

@@ -25,3 +25,4 @@ _testmain.go
 /local_config.sh
 /.vagrant
 /README.html
+/bootstrap.log
