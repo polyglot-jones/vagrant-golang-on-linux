@@ -1,8 +1,35 @@
 #!/usr/bin/env bash
 
+# IMPORTANT: When this script is invoked as part of VAGRANT UP (i.e. as specified 
+# via  Vagrantfile), it executes while being logged in as root (and $HOME is /root). 
+# However, the VAGRANT SSH command logs you in as "vagrant" and $HOME is /home/vagrant.
+
 # This script is idempotent. There is no harm is running it multiple times.
 
 echo "==========  Starting Bootstrap.sh  ==========" &>> /vagrant/bootstrap.log
+
+######################################################   Linux Software Installs (as root)
+
+sudo apt-get update 2>> /vagrant/bootstrap.log
+
+# Install the 3 version-control systems
+sudo apt-get install -y git mercurial bzr 2>> /vagrant/bootstrap.log
+
+# Next, install a specific version of Go
+cd ~
+if [ ! -d "/usr/local/go" ]; then
+	echo "Installing Go" &>> /vagrant/bootstrap.log
+	wget -q https://storage.googleapis.com/golang/go1.4.linux-386.tar.gz 2>> /vagrant/bootstrap.log
+	tar -C /usr/local -xzf go1.4.linux-386.tar.gz 2>> /vagrant/bootstrap.log
+fi
+
+
+######################################################   User-Specific Config (as vagrant)
+if [ "$EUID" -e 0 ]; then 
+	echo "Switching from root user to vagrant user" &>> /vagrant/bootstrap.log
+	su -l vagrant
+fi
+
 echo "HOME = $HOME" &>> /vagrant/bootstrap.log
 
 if [ -f "/vagrant/bash_aliases" ]; then
@@ -24,11 +51,8 @@ if [ -f "/vagrant/local_config.sh" ]; then
 	source /vagrant/local_config.sh
 fi
 
-sudo apt-get update 2>> /vagrant/bootstrap.log
+######################################################   Version Control Configuration
 
-######################################################   Version Control
-
-sudo apt-get install -y git mercurial bzr 2>> /vagrant/bootstrap.log
 
 echo "VC_NAME = $VC_NAME" &>> /vagrant/bootstrap.log
 echo "VC_EMAIL = $VC_EMAIL" &>> /vagrant/bootstrap.log
@@ -46,13 +70,6 @@ if ! [ -f "$HOME/.netrc" ]; then
 	fi
 fi
 
-######################################################   Go Lang
-cd ~
-if [ ! -d "/usr/local/go" ]; then
-	echo "Installing Go" &>> /vagrant/bootstrap.log
-	wget -q https://storage.googleapis.com/golang/go1.4.linux-386.tar.gz 2>> /vagrant/bootstrap.log
-	tar -C /usr/local -xzf go1.4.linux-386.tar.gz 2>> /vagrant/bootstrap.log
-fi
 
 ######################################################   GoDep
 echo "Installing GoDep" &>> /vagrant/bootstrap.log
