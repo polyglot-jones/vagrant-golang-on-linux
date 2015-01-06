@@ -22,10 +22,13 @@ sudo apt-get install -y git mercurial bzr 2>> /vagrant/bootstrap.log
 
 echo "Installing PostgreSQL 9.3.x" &>> /vagrant/bootstrap.log
 sudo apt-get install -y postgresql-9.3 postgresql-contrib-9.3
+echo "Changing Postgre to trust mode (/etc/postgresql/9.3/main/pg_hba.conf)" &>> /vagrant/bootstrap.log
+sed -i "s/local\s*all\s*all\s*peer/local all all trust/" /etc/postgresql/9.3/main/pg_hba.conf 2>> /vagrant/bootstrap.log
+sudo /etc/init.d/postgresql restart 2>> /vagrant/bootstrap.log
 echo "Creating PostgreSQL user 'vagrant' as a superuser and an empty 'vagrant' database." &>> /vagrant/bootstrap.log
-sudo -u postgres createuser --superuser vagrant
-sudo -u postgres createdb vagrant
- 
+sudo -u postgres createuser --superuser vagrant 2>> /vagrant/bootstrap.log
+sudo -u postgres createdb --owner=vagrant vagrant 2>> /vagrant/bootstrap.log
+
 cd ~
 if [ ! -d "/usr/local/go" ]; then
 	echo "Installing the Go language compiler version 1.4" &>> /vagrant/bootstrap.log
