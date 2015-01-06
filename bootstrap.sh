@@ -10,23 +10,28 @@ echo "==========  Starting Bootstrap.sh  ==========" &>> /vagrant/bootstrap.log
 
 ######################################################   Linux Software Installs
 
+echo "Pointing apt-get to the PostgreSQL repository." &>> /vagrant/bootstrap.log
+echo "deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main" > /etc/apt/sources.list.d/pgdg.list
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+
 echo "Updating apt-get" &>> /vagrant/bootstrap.log
 sudo apt-get update 2>> /vagrant/bootstrap.log
 
 echo "Installing the 3 version-control systems" &>> /vagrant/bootstrap.log
 sudo apt-get install -y git mercurial bzr 2>> /vagrant/bootstrap.log
 
-echo "Installing PostgreSQL with 'vagrant' as a superuser and an empty 'vagrant' database." &>> /vagrant/bootstrap.log
-sudo apt-get install -y postgresql postgresql-contrib
+echo "Installing PostgreSQL 9.3.x" &>> /vagrant/bootstrap.log
+sudo apt-get install -y postgresql-9.3 postgresql-contrib-9.3
+echo "Creating PostgreSQL user 'vagrant' as a superuser and an empty 'vagrant' database." &>> /vagrant/bootstrap.log
 sudo -u postgres createuser --superuser vagrant
 sudo -u postgres createdb vagrant
  
-# Next, install a specific version of Go
 cd ~
 if [ ! -d "/usr/local/go" ]; then
-	echo "Installing the Go language compiler" &>> /vagrant/bootstrap.log
+	echo "Installing the Go language compiler version 1.4" &>> /vagrant/bootstrap.log
 	wget -q https://storage.googleapis.com/golang/go1.4.linux-386.tar.gz 2>> /vagrant/bootstrap.log
 	tar -C /usr/local -xzf go1.4.linux-386.tar.gz 2>> /vagrant/bootstrap.log
+	chown -R vagrant /usr/local/go
 fi
 
 
