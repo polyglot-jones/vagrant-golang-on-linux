@@ -8,46 +8,48 @@
 
 echo "==========  Starting Bootstrap.sh  ==========" &>> /vagrant/bootstrap.log
 
-######################################################   Linux Software Installs (as root)
+######################################################   Linux Software Installs
 
+echo "Updating apt-get" &>> /vagrant/bootstrap.log
 sudo apt-get update 2>> /vagrant/bootstrap.log
 
-# Install the 3 version-control systems
+echo "Installing the 3 version-control systems" &>> /vagrant/bootstrap.log
 sudo apt-get install -y git mercurial bzr 2>> /vagrant/bootstrap.log
 
+echo "Installing PostgreSQL with 'vagrant' as a superuser and an empty 'vagrant' database." &>> /vagrant/bootstrap.log
+sudo apt-get install -y postgresql postgresql-contrib
+sudo -u postgres createuser --superuser vagrant
+sudo -u postgres createdb vagrant
+ 
 # Next, install a specific version of Go
 cd ~
 if [ ! -d "/usr/local/go" ]; then
-	echo "Installing Go" &>> /vagrant/bootstrap.log
+	echo "Installing the Go language compiler" &>> /vagrant/bootstrap.log
 	wget -q https://storage.googleapis.com/golang/go1.4.linux-386.tar.gz 2>> /vagrant/bootstrap.log
 	tar -C /usr/local -xzf go1.4.linux-386.tar.gz 2>> /vagrant/bootstrap.log
 fi
 
 
-######################################################   User-Specific Config (as vagrant)
-if [ "$EUID" -e 0 ]; then 
-	echo "Switching from root user to vagrant user" &>> /vagrant/bootstrap.log
-	su -l vagrant
-fi
-
-echo "HOME = $HOME" &>> /vagrant/bootstrap.log
+######################################################   User-Specific Config
+echo "Ensuring that /home/vagrant exists" &>> /vagrant/bootstrap.log
+mkdir -p /home/vagrant
 
 if [ -f "/vagrant/bash_aliases" ]; then
 	echo "bash_aliases exists" &>> /vagrant/bootstrap.log
-	if ! [ -f "$HOME/.bash_aliases" ]; then
-		echo "Copying bash_aliases as ~/.bash_aliases" &>> /vagrant/bootstrap.log
-		sudo cp /vagrant/bash_aliases $HOME/.bash_aliases 2>> /vagrant/bootstrap.log
-		sudo chmod 644 $HOME/.bash_aliases
+	if ! [ -f "/home/vagrant/.bash_aliases" ]; then
+		echo "Copying bash_aliases as /home/vagrant/.bash_aliases" &>> /vagrant/bootstrap.log
+		sudo cp /vagrant/bash_aliases /home/vagrant/.bash_aliases 2>> /vagrant/bootstrap.log
+		sudo chmod 644 /home/vagrant/.bash_aliases
 	fi
-	if [ -f "$HOME/.bash_aliases" ]; then
-		source ~/.bash_aliases
+	if [ -f "/home/vagrant/.bash_aliases" ]; then
+		source /home/vagrant/.bash_aliases
 	else
-		echo "ERROR: FAILED TO COPY bash_aliases as ~/.bash_aliases" &>> /vagrant/bootstrap.log
+		echo "ERROR: FAILED TO COPY bash_aliases as /home/vagrant/.bash_aliases" &>> /vagrant/bootstrap.log
 	fi
 fi
 
 if [ -f "/vagrant/local_config.sh" ]; then
-	echo "local_config.sh exists" &>> /vagrant/bootstrap.log
+	echo "Loading local_config.sh" &>> /vagrant/bootstrap.log
 	source /vagrant/local_config.sh
 fi
 
@@ -61,12 +63,12 @@ echo "GITHUB_APP_TOKEN = $GITHUB_APP_TOKEN" &>> /vagrant/bootstrap.log
 git config --global user.name "$VC_NAME"
 git config --global user.email $VC_EMAIL
 bzr whoami "$VC_NAME <$VC_EMAIL>"
-# TODO Create a file called ~/.hgrc with Hg settings, including username=John Doe <johndoe@example.com> (under the [ui] section)
-if ! [ -f "$HOME/.netrc" ]; then
-	echo "~/.netrc does not already exist. Creating it now." &>> /vagrant/bootstrap.log
-	sudo echo "machine github.com login $GITHUB_APP_TOKEN" > $HOME/.netrc
-	if ! [ -f "$HOME/.netrc" ]; then
-		echo "ERROR: FAILED TO CREATE ~/.netrc" &>> /vagrant/bootstrap.log
+# TODO Create a file called /home/vagrant/.hgrc with Hg settings, including username=John Doe <johndoe@example.com> (under the [ui] section)
+if ! [ -f "/home/vagrant/.netrc" ]; then
+	echo "/home/vagrant/.netrc does not already exist. Creating it now." &>> /vagrant/bootstrap.log
+	sudo echo "machine github.com login $GITHUB_APP_TOKEN" > /home/vagrant/.netrc
+	if ! [ -f "/home/vagrant/.netrc" ]; then
+		echo "ERROR: FAILED TO CREATE /home/vagrant/.netrc" &>> /vagrant/bootstrap.log
 	fi
 fi
 

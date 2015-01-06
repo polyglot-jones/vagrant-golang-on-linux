@@ -25,12 +25,19 @@ Here are just some possible reasons to do this:
 ** Git
 ** Hg
 ** Bazaar
+* PostgreSQL
+** Database Server (with 'vagrant' as a superuser)
+** Command-line client (psql)
 * Documentation Tools
 ** AsciiDoc (TODO - Not Yet)
 ** GraphViz (TODO - Not Yet)
 ** a Swagger documentation generator (for REST API calls) from Go comments (TODO - Not Yet)
 
+=== What's NOT Installed
 
+* PostgreSQL
+** GUI Admin tool (Use `sudo apt-get install pgadmin3`)
+** Addon-packages (Use `apt-cache search postgres` to list what's available)
 
 == Prerequisites
 
