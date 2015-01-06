@@ -6,13 +6,17 @@ echo "==========  Starting Bootstrap.sh  ==========" &>> /vagrant/bootstrap.log
 
 ls -l /vagrant
 
-if [ -f "/vagrant/profile_continued.sh" ]; then
-	echo "profile_continued.sh exists" &>> /vagrant/bootstrap.log
-	# chmod 770 "/vagrant/profile_continued.sh"
-    source /vagrant/profile_continued.sh
-	if ! grep -q GOPATH ~/.profile; then
-		echo "Appending profile_continued.sh to ~/.profile" &>> /vagrant/bootstrap.log
-		sudo cat /vagrant/profile_continued.sh >> ~/.profile 2>> /vagrant/bootstrap.log
+if [ -f "/vagrant/bash_aliases" ]; then
+	echo "bash_aliases exists" &>> /vagrant/bootstrap.log
+	if ! [ -f "~/.bash_aliases" ]; then
+		echo "Copying bash_aliases as ~/.bash_aliases" &>> /vagrant/bootstrap.log
+		cp /vagrant/bash_aliases ~/.bash_aliases 2>> /vagrant/bootstrap.log
+		chmod 644 ~/.bash_aliases
+	fi
+	if [ -f "~/.bash_aliases" ]; then
+		source ~/.bash_aliases
+	else
+		echo "ERROR: FAILED TO COPY bash_aliases as ~/.bash_aliases" &>> /vagrant/bootstrap.log
 	fi
 fi
 
@@ -36,17 +40,13 @@ git config --global user.name "$VC_NAME"
 git config --global user.email $VC_EMAIL
 bzr whoami "$VC_NAME <$VC_EMAIL>"
 # TODO Create a file called ~/.hgrc with Hg settings, including username=John Doe <johndoe@example.com> (under the [ui] section)
-if [ ! -f "~/.netrc" ]; then
+if ! [ -f "~/.netrc" ]; then
 	echo "~/.netrc does not already exist. Creating it now." &>> /vagrant/bootstrap.log
-	sudo echo "machine github.com login $GITHUB_APP_TOKEN" > ~/.netrc 2>> /vagrant/bootstrap.log
+	echo "machine github.com login $GITHUB_APP_TOKEN" > ~/.netrc
+	if ! [ -f "~/.netrc" ]; then
+		echo "ERROR: FAILED TO CREATE ~/.netrc" &>> /vagrant/bootstrap.log
+	fi
 fi
-
-######################################################   Apache Server
-# sudo apt-get install -y apache2
-# if ! [ -L /var/www ]; then
-#   rm -rf /var/www
-#   ln -fs /vagrant /var/www
-# fi
 
 ######################################################   Go Lang
 cd ~
