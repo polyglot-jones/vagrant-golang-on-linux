@@ -20,7 +20,7 @@ Here are just some possible reasons to do this:
 
 * Go Tools
 ** GoLang 1.4
-** GoDep (dependency management) (TODO - Not Yet)
+** GoDep (dependency management)
 * Version Control
 ** Git
 ** Hg
@@ -31,7 +31,7 @@ Here are just some possible reasons to do this:
 * Documentation Tools
 ** AsciiDoc (TODO - Not Yet)
 ** GraphViz (TODO - Not Yet)
-** a Swagger documentation generator (for REST API calls) from Go comments (TODO - Not Yet)
+** A Swagger documentation generator (for REST API calls) from Go comments
 
 === What's NOT Installed
 
@@ -108,12 +108,9 @@ This is still a work in progress, but definitely usable.
 
 *Known Bugs:*
 
-* The contents of `profile_additional.sh` are supposed to be tacked on to `.profile.sh` so that they get executed when an SSH session starts up, but it's not working. For now, issue `source profile_additional.sh` right after starting a new session with `vagrant ssh`.
-* The settings in `local_config.sh` are used to configure Git and Mercurial, but Bazaar is not yet configured with them.
+* The settings in `local_config.sh` are used to configure Git and Bazaar, but Mercurial is not yet configured with them. (This is only a problem if you intend to commit code back to a Mercurial repository.)
 
 *Missing Features:*
 
 * See the `TODO` comments in `Vagrantfile` and `bootstrap.sh`.
 * Using shell scripts to install the software is undoubtedly doing it the hard way, but I haven't learned how to take advantage of Chef and Phuppet yet.
-
-
