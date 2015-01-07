@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 # local_config.sh -- DO NOT COMIT TO VERSION CONTROL (other than as an example)
+# 
+# declare GOVERSION="1.3" # Leave undefined for bootstrap.sh to use its default value
 declare VC_NAME="Your Name Here"
 declare VC_EMAIL="your@email.here"
 declare GITHUB_APP_TOKEN="your-app-token-here"
