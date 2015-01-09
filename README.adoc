@@ -25,9 +25,12 @@ Here are just some possible reasons to do this:
 ** Git
 ** Hg
 ** Bazaar
-* PostgreSQL
+* (optional) PostgreSQL
 ** Database Server (with 'vagrant' as a superuser)
 ** Command-line client (psql)
+* (optional) AMQP Message Queuing
+** Erlang (automatically included)
+** RabbitMQ Server with default settings (e.g. limited number of queues)
 * Documentation Tools
 ** AsciiDoc (TODO - Not Yet)
 ** GraphViz (TODO - Not Yet)
@@ -54,6 +57,7 @@ Here are just some possible reasons to do this:
 .. Optionally, change the `config.vm.box` line in `Vagrantfile` to specify a different Vagrant guest machine to use as a base.
 .. Optionally, change the `config.vm.define` line in `Vagrantfile` to specify a different name for your VM other than `godev`.
 .. Copy `local_config.sh.example` as `local_config.sh` and edit it to fill in the blanks (`Your Name Here`, `your@email.here`, `your-app-token-here`).
+.. `local_config.sh` is also where you can specify whether or not to install PosgreSQL and/or RabbitMQ, and which version of GoLang to install.
 . Download and Install Oracle VirtualBox (or any other virtual machine software that is supported by Vagrant).
 .. https://www.virtualbox.org/wiki/Downloads
 .. Start VirtualBox and make sure that the configured location for the VMs is on a disk partition that has adequate space. That setting is under `File | Preferences... (Ctrl-G) | General Settings` (For example, if there is plenty of space on the D: partition, then perhaps use `D:\data\vboxmachines`.)
